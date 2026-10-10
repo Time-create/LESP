@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>LESP·辑微 V5 布局预览（可交互）</title>
+<style>
+  /* 与现有 app.css 同一套设计变量 */
+  :root{
+    --paper:#F7F5F0; --paper-deep:#F1EEE7; --card:#FFFFFF; --detail:#FCFBF8;
+    --border:#E3DED3; --border-soft:#F2EFE8;
+    --ink:#2A2724; --ink-2:#6F6960; --ink-3:#9A938A;
+    --cinnabar:#A63A28; --cinnabar-soft:#FBEEEB; --ochre:#8A6A3B; --moss:#4A6B4F;
+    --radius:12px; --radius-sm:8px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;font-size:13px;line-height:1.6}
+
+  /* ── 顶部导航栏（Zotero 式，取代左侧主导航） ── */
+  .topbar{display:flex;align-items:center;gap:2px;height:38px;padding:0 10px;
+    background:var(--paper-deep);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+  .brand{font-weight:600;letter-spacing:1px;margin-right:14px;color:var(--ink)}
+  .navbtn{padding:4px 11px;border-radius:6px;color:var(--ink-2);cursor:pointer;font-size:13px;white-space:nowrap}
+  .navbtn:hover{background:rgba(166,58,40,.07);color:var(--cinnabar)}
+  .navbtn.on{background:var(--cinnabar);color:#fff}
+  .nav-sep{width:1px;height:16px;background:var(--border);margin:0 6px}
+  .search{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .search input{width:210px;padding:4px 9px;border:1px solid var(--border);border-radius:999px;
+    background:var(--card);font:inherit;font-size:12px;color:var(--ink)}
+  .top-act{padding:4px 9px;border:1px solid var(--border);border-radius:6px;background:var(--card);
+    cursor:pointer;font-size:12px;color:var(--ink-2)}
+  .top-act:hover{border-color:var(--cinnabar);color:var(--cinnabar)}
+
+  /* ── 主体三栏 ── */
+  .shell{display:flex;height:calc(100vh - 38px)}
+  .col-tree{width:212px;flex:none;background:var(--paper);border-right:1px solid var(--border);
+    display:flex;flex-direction:column;overflow:hidden}
+  .col-list{width:300px;flex:none;border-right:1px solid var(--border);background:var(--card);
+    display:flex;flex-direction:column;overflow:hidden}
+  .col-detail{flex:1;min-width:0;background:var(--detail);display:flex;flex-direction:column;overflow:hidden}
+  .col-detail.closed{width:44px;flex:none}
+  .col-detail.closed .d-body,.col-detail.closed .d-head .d-title{display:none}
+  .col-detail.closed .d-head{justify-content:center;padding:8px 0}
+
+  .pane-head{padding:7px 10px;font-size:11px;color:var(--ink-3);border-bottom:1px solid var(--border-soft);
+    display:flex;align-items:center;gap:6px;flex:none}
+  .pane-head .grow{flex:1}
+  .mini{padding:2px 7px;border:1px solid var(--border);border-radius:5px;background:var(--card);
+    cursor:pointer;font-size:11px;color:var(--ink-2)}
+  .mini:hover{border-color:var(--cinnabar);color:var(--cinnabar)}
+  .mini.solid{background:var(--cinnabar);border-color:var(--cinnabar);color:#fff}
+  .pane-body{flex:1;overflow-y:auto;padding:4px 0}
+
+  /* ── 分类树 ── */
+  .grp{padding:8px 10px 3px;font-size:10.5px;color:var(--ink-3);letter-spacing:.5px}
+  .node{display:flex;align-items:center;gap:4px;padding:3px 10px;cursor:pointer;font-size:12.5px;color:var(--ink-2);
+    border-left:2px solid transparent}
+  .node:hover{background:rgba(166,58,40,.06)}
+  .node.on{background:var(--cinnabar-soft);border-left-color:var(--cinnabar);color:var(--cinnabar);font-weight:600}
+  .node .arw{width:11px;flex:none;color:var(--ink-3);font-size:9px;text-align:center;transition:transform .15s}
+  .node .arw.open{transform:rotate(90deg)}
+  .node .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .node .ct{font-size:10.5px;color:var(--ink-3)}
+  .kids{display:none}
+  .kids.open{display:block}
+
+  /* ── 主题树（首页新增） ── */
+  .theme .node{color:var(--ink)}
+  .theme .node.on{background:rgba(74,107,79,.10);border-left-color:var(--moss);color:var(--moss)}
+  .theme-badge{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--moss);
+    margin-right:5px;vertical-align:middle}
+  .rel{margin:2px 0 6px 30px;padding:4px 8px;border-left:2px solid var(--moss);
+    background:rgba(74,107,79,.05);border-radius:0 5px 5px 0}
+  .rel-item{padding:2px 0;font-size:12px;color:var(--ink-2);cursor:pointer;display:flex;gap:6px}
+  .rel-item:hover{color:var(--moss)}
+  .rel-item .k{font-size:10px;color:#fff;background:var(--ochre);border-radius:3px;padding:0 4px;height:15px;line-height:15px}
+
+  /* ── 条目列表（细长、高密度） ── */
+  .li{padding:6px 11px;border-bottom:1px solid var(--border-soft);cursor:pointer;
+    border-left:2px solid transparent}
+  .li:hover{background:var(--paper)}
+  .li.on{background:var(--cinnabar-soft);border-left-color:var(--cinnabar)}
+  .li-t{font-size:12.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .li.on .li-t{color:var(--cinnabar);font-weight:600}
+  .li-s{font-size:11px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tags{margin-top:2px;display:flex;gap:3px;flex-wrap:wrap}
+  .tag{font-size:10px;padding:0 5px;border-radius:3px;background:var(--paper-deep);color:var(--ink-2);line-height:15px}
+  .tag.moss{background:rgba(74,107,79,.12);color:var(--moss)}
+  .tag.ochre{background:rgba(138,106,59,.13);color:var(--ochre)}
+
+  /* ── 详情栏 ── */
+  .d-head{padding:11px 14px 8px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+  .d-title{font-size:15px;font-weight:600;flex:1}
+  .d-body{flex:1;overflow-y:auto;padding:12px 14px}
+  .sec{margin-bottom:14px}
+  .sec-t{font-size:10.5px;color:var(--ink-3);letter-spacing:.6px;margin-bottom:5px}
+  .abs{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--radius-sm);
+    padding:8px 10px;font-size:12.5px;color:var(--ink-2)}
+  .kv{display:flex;gap:8px;font-size:12px;padding:2px 0}
+  .kv b{flex:0 0 68px;color:var(--ink-3);font-weight:500}
+  .empty{padding:26px 16px;text-align:center;color:var(--ink-3);font-size:12.5px}
+  .note{width:100%;min-height:64px;border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:7px 9px;font:inherit;font-size:12.5px;resize:vertical;background:var(--card)}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+  .chip{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--moss-soft,rgba(74,107,79,.12));
+    color:var(--moss);display:flex;gap:4px;align-items:center}
+  .chip .x{cursor:pointer;opacity:.5}
+  .chip .x:hover{opacity:1;color:#B3261E}
+  .chip.add{border:1px dashed var(--border);background:none;color:var(--ink-3);cursor:pointer}
+  .pick{border:1px dashed var(--border);border-radius:5px;padding:3px 8px;font-size:11px;
+    color:var(--ink-2);cursor:grab;background:var(--card)}
+  .pick.over{border-color:var(--cinnabar);background:var(--cinnabar-soft);color:var(--cinnabar)}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);
+    color:#fff;padding:7px 15px;border-radius:999px;font-size:12px;opacity:0;transition:.2s;z-index:99}
+  .toast.on{opacity:1}
+  .legend{position:fixed;right:12px;top:46px;z-index:30;background:rgba(255,255,255,.96);
+    border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:11px;color:var(--ink-2);
+    box-shadow:0 4px 14px rgba(0,0,0,.08);max-width:250px}
+  .legend b{display:block;margin-bottom:3px}
+  .legend .row{display:flex;align-items:center;gap:5px;margin:2px 0}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">LESP·辑微</span>
+  <span class="navbtn on" data-page="首页总览">首页总览</span>
+  <span class="nav-sep"></span>
+  <span class="navbtn" data-page="古籍史料">古籍史料</span>
+  <span class="navbtn" data-page="碑刻史料">碑刻史料</span>
+  <span class="navbtn" data-page="文书史料">文书史料</span>
+  <span class="navbtn" data-page="档案史料">档案史料</span>
+  <span class="navbtn" data-page="研究论文">研究论文</span>
+  <span class="navbtn" data-page="研究著作">研究著作</span>
+  <span class="nav-sep"></span>
+  <span class="navbtn" data-page="史料长编">史料长编</span>
+  <span class="navbtn" data-page="读书札记">读书札记</span>
+  <span class="navbtn" data-page="史学论文">史学论文</span>
+  <div class="search">
+    <input placeholder="检索题名、标签、备注…">
+    <button class="top-act">筛选</button>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- 左栏：分类树 + 主题树 -->
+  <aside class="col-tree">
+    <div class="pane-head">
+      <span class="grow">分类与主题</span>
+      <button class="mini" id="btn-add-cat" title="新建分类">＋分类</button>
+      <button class="mini" id="btn-add-theme" title="新建主题">＋主题</button>
+    </div>
+    <div class="pane-body">
+
+      <div class="grp">史料分类</div>
+      <div id="tree-cats"></div>
+
+      <div class="grp">主题树（研究视角）</div>
+      <div class="theme" id="tree-themes"></div>
+
+    </div>
+  </aside>
+
+  <!-- 中栏：条目列表 -->
+  <section class="col-list">
+    <div class="pane-head">
+      <span class="grow" id="list-title">全部文献</span>
+      <button class="mini" id="btn-sort">按更新↓</button>
+    </div>
+    <div class="pane-body" id="list"></div>
+  </section>
+
+  <!-- 右栏：详情 -->
+  <aside class="col-detail" id="detail">
+    <div class="d-head">
+      <div class="d-title" id="d-title">未选中条目</div>
+      <button class="mini" id="btn-open-full" title="进入现有录入页">完整页面</button>
+      <button class="mini" id="btn-toggle-detail" title="收起/展开详情栏">⇥</button>
+    </div>
+    <div class="d-body" id="d-body">
+      <div class="empty">从中间列表选一条文献<br>这里显示摘要、分类、标签与备注</div>
+    </div>
+  </aside>
+</div>
+
+<div class="legend">
+  <b>可试的功能（都能点）</b>
+  <div class="row">▸ 分类树：点箭头折叠、点名称筛选、<b>右键有删除/重命名</b></div>
+  <div class="row">▸ 主题树：点主题展开，看它关联了哪些文献</div>
+  <div class="row">▸ 中间列表：点条目 → 右栏显示详情</div>
+  <div class="row">▸ 右栏：标签可加可删；「完整页面」进入录入页</div>
+  <div class="row">▸ 右上 ⇥ 可收起详情栏</div>
+  <div class="row">▸ 把条目拖到左栏分类上 = 归类</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 演示数据 ============ */
+const CATS = [
+  {id:1,name:'制度',n:12,sub:[{id:11,name:'钱法研究',n:5},{id:12,name:'铨选',n:3}]},
+  {id:2,name:'职官',n:8,sub:[{id:21,name:'铨测',n:2}]},
+  {id:3,name:'乡村研究',n:5},
+  {id:4,name:'未分类',n:7}
+];
+const THEMES = [
+  {id:'t1',name:'宋代财政',n:9,kids:[
+    {id:'t11',name:'赋税',n:4}, {id:'t12',name:'漕运',n:5}
+  ]},
+  {id:'t2',name:'经济史研究',n:14},
+  {id:'t3',name:'制度史',n:11},
+  {id:'t4',name:'历史地理',n:6}
+];
+const ITEMS = [
+  {id:101,t:'淳化四年钱法诏令考',s:'（碑刻）· 撰者不详 · 钱塘',cats:['制度','钱法研究'],themes:['宋代财政','赋税'],
+   abs:'《淳化元宝》铸行始末。宋初钱法三变，钱质由铁转铜再至夹锡……本文以出土与传世钱币互证，考其折值与流通区域。',
+   kv:[['撰者','不详'],['书者','待考'],['刻工','—'],['年代','淳化四年（993）'],['出土地','杭州'],['现藏地','浙江省博物馆']],
+   tags:['钱法','出土','北宋'],note:'与《天圣令》篇可互证。'},
+  {id:102,t:'元丰年间铨选考',s:'（文书）· 吏部 · 汴京',cats:['职官'],themes:['制度史'],
+   abs:'考元丰铨选之法，兼论同年省与磨勘之制。',kv:[['文书类型','其他'],['年代','元丰'],['地点','汴京'],['收藏单位','—']],tags:['铨选','官制'],note:''},
+  {id:103,t:'淳熙三年休宁置产簿',s:'（文书）· 契约 · 休宁',cats:['乡村研究'],themes:['经济史研究'],
+   abs:'休宁置产簿所见田产交易形态。',kv:[['文书类型','契约'],['年代','淳熙三年'],['地点','休宁'],['档号','—']],tags:['契约','土地'],note:'注意有无朱批。'},
+  {id:104,t:'吴郡重修大成殿记',s:'（碑刻）· 撰于绍兴 · 姑苏',cats:['制度','钱法研究'],themes:['历史地理'],
+   abs:'绍兴间重修学宫碑记，涉及地方祀典。',kv:[['撰者','—'],['年代','绍兴'],['现藏地','苏州碑刻博物馆']],tags:['学宫','地方志'],note:''},
+  {id:105,t:'未归类史料二种',s:'（古籍）· 待整理',cats:['未分类'],themes:[],
+   abs:'尚未录入完整信息。',kv:[['版本','待考']],tags:[],note:'待补。'},
+  {id:106,t:'淳熙年禁榷诸路记',s:'（文书）· 榷院 · 江南西路',cats:['制度'],themes:['宋代财政','漕运'],
+   abs:'论南宋榷禁与财政之关系。',kv:[['文书类型','其他'],['年代','淳熙'],['地点','江南西路']],tags:['榷禁','财政'],note:''}
+];
+
+/* ============ 状态 ============ */
+let curCat = null;        // 选中的分类
+let curTheme = null;      // 展开的主题
+let curItem = null;       // 选中的条目
+const openCat = new Set([1,2]);
+const openTheme = new Set();
+const itemCats = {};      // id -> [分类名]
+const itemTags = {};      // id -> [标签]
+const itemNotes = {};     // id -> 备注
+ITEMS.forEach(i=>{ itemCats[i.id]=i.cats.slice(); itemTags[i.id]=i.tags.slice(); itemNotes[i.id]=i.note; });
+
+/* ============ 工具 ============ */
+const $ = id => document.getElementById(id);
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),1600); }
+
+/* ============ 分类树 ============ */
+function renderCats(){
+  const html = CATS.map(c=>{
+    const has = c.sub && c.sub.length;
+    const open = openCat.has(c.id);
+    const on = curCat === c.id;
+    return `<div class="node${on?' on':''}" data-cat="${c.id}" data-grp="cat">
+      <span class="arw${has?(open?' open':''):''}" data-toggle="${c.id}">${has?'▶':''}</span>
+      <span class="nm">${c.name}</span><span class="ct">${c.n}</span></div>`
+      + (has ? `<div class="kids${open?' open':''}">`
+          + c.sub.map(s=>`<div class="node${curCat===s.id?' on':''}" data-cat="${s.id}"><span class="arw"></span><span class="nm">${s.name}</span><span class="ct">${s.n}</span></div>`).join('')
+        + `</div>` : '');
+  }).join('');
+  $('tree-cats').innerHTML = html;
+}
+
+/* ============ 主题树 ============ */
+function renderThemes(){
+  $('tree-themes').innerHTML = THEMES.map(t=>{
+    const open = openTheme.has(t.id);
+    const has = t.kids && t.kids.length;
+    return `<div class="node${curTheme===t.id?' on':''}" data-theme="${t.id}">
+      <span class="arw${has?(open?' open':''):''}" data-ttoggle="${t.id}">${has?'▶':''}</span>
+      <span class="nm"><span class="theme-badge"></span>${t.name}</span><span class="ct">${t.n}</span></div>`
+      + (has ? `<div class="kids${open?' open':''}">` + t.kids.map(k=>
+          `<div class="node" data-theme="${k.id}"><span class="arw"></span><span class="nm" style="padding-left:10px">${k.name}</span><span class="ct">${k.n}</span></div>`).join('') + `</div>` : '')
+      + (curTheme===t.id ? relatedPanel(t.id) : '');
+  }).join('');
+}
+function relatedPanel(themeId){
+  const list = ITEMS.filter(i=>i.themes.includes(themeName(themeId)));
+  if(!list.length) return '<div class="rel"><div class="rel-item" style="color:var(--ink-3)">尚无关联文献</div></div>';
+  return '<div class="rel">' + list.map(i=>`<div class="rel-item" data-item="${i.id}"><span class="k">${i.s.slice(1,3)}</span><span>${i.t}</span></div>`).join('') + '</div>';
+}
+function themeName(id){
+  for(const t of THEMES){ if(t.id===id) return t.name; for(const k of (t.kids||[])) if(k.id===id) return k.name; }
+  return '';
+}
+
+/* ============ 条目列表 ============ */
+function visible(){
+  let out = ITEMS.slice();
+  if(curCat){
+    const c = CATS.find(x=>x.id===curCat);
+    const names = [c.name].concat((c.sub||[]).map(s=>s.name));
+    out = out.filter(i=>i.cats.some(x=>names.includes(x)));
+  }
+  if(curTheme){ out = out.filter(i=>i.themes.includes(themeName(curTheme))); }
+  return out;
+}
+function renderList(){
+  const rows = visible();
+  $('list-title').textContent = (curTheme? '主题：'+themeName(curTheme) : curCat? '分类：'+catName(curCat) : '全部文献') + '（'+rows.length+'）';
+  $('list').innerHTML = rows.length ? rows.map(i=>`
+    <div class="li${curItem===i.id?' on':''}" data-item="${i.id}" draggable="true">
+      <div class="li-t">${i.t}</div>
+      <div class="li-s">${i.s}</div>
+      <div class="tags">${(itemCats[i.id]||[]).slice(0,2).map(c=>`<span class="tag">${c}</span>`).join('')}
+        ${(itemTags[i.id]||[]).slice(0,2).map(t=>`<span class="tag moss">${t}</span>`).join('')}</div>
+    </div>`).join('') : '<div class="empty">此分类下暂无文献</div>';
+}
+function catName(id){ const c=CATS.find(x=>x.id===id); if(c) return c.name;
+  for(const x of CATS) for(const s of (x.sub||[])) if(s.id===id) return s.name; return ''; }
+
+/* ============ 详情栏 ============ */
+function renderDetail(){
+  const it = ITEMS.find(i=>i.id===curItem);
+  if(!it){ $('d-title').textContent='未选中条目';
+    $('d-body').innerHTML='<div class="empty">从中间列表选一条文献<br>这里显示摘要、分类、标签与备注</div>'; return; }
+  $('d-title').textContent = it.t;
+  $('d-body').innerHTML = `
+    <div class="sec"><div class="sec-t">分类</div>
+      <div class="chips">${itemCats[it.id].map(c=>`<span class="chip" style="background:rgba(138,106,59,.12);color:var(--ochre)">${c}<span class="x" data-rmcat="${c}">×</span></span>`).join('')||'<span style="color:var(--ink-3);font-size:12px">未归类</span>'}</div></div>
+    <div class="sec"><div class="sec-t">主题</div>
+      <div class="chips">${it.themes.map(t=>`<span class="chip">${t}</span>`).join('')||'<span style="color:var(--ink-3);font-size:12px">无</span>'}</div></div>
+    <div class="sec"><div class="sec-t">标签</div>
+      <div class="chips" id="tagbox">${itemTags[it.id].map(t=>`<span class="chip">${t}<span class="x" data-rmtag="${t}">×</span></span>`).join('')}
+        <span class="chip add" data-addtag="1">＋ 添加</span></div></div>
+    <div class="sec"><div class="sec-t">摘要</div><div class="abs">${it.abs}</div></div>
+    <div class="sec"><div class="sec-t">字段</div>${it.kv.map(k=>`<div class="kv"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('')}</div>
+    <div class="sec"><div class="sec-t">备注</div>
+      <textarea class="note" id="d-note" placeholder="写下你的判断…">${itemNotes[it.id]||''}</textarea></div>`;
+}
+
+/* ============ 交互 ============ */
+document.addEventListener('click', e=>{
+  const t = e.target;
+  // 折叠箭头
+  if(t.dataset.toggle){ const id=+t.dataset.toggle; openCat.has(id)?openCat.delete(id):openCat.add(id); renderCats(); e.stopPropagation(); return; }
+  if(t.dataset.ttoggle){ const id=t.dataset.ttoggle; openTheme.has(id)?openTheme.delete(id):openTheme.add(id); renderThemes(); e.stopPropagation(); return; }
+  // 分类
+  if(t.dataset.cat){ curCat=+t.dataset.cat; renderCats(); renderList(); return; }
+  // 主题
+  if(t.dataset.theme){ curTheme = curTheme===t.dataset.theme?null:t.dataset.theme;
+    if(curTheme) openTheme.add(curTheme); renderThemes(); renderList(); return; }
+  // 关联文献 / 列表条目
+  if(t.dataset.item){ curItem=+t.dataset.item; renderList(); renderDetail(); return; }
+  // 删标签
+  if(t.dataset.rmtag){ const tg=t.dataset.rmtag; itemTags[curItem]=itemTags[curItem].filter(x=>x!==tg);
+    toast('已移除标签「'+tg+'」'); renderList(); renderDetail(); return; }
+  if(t.dataset.rmcat){ const c=t.dataset.rmcat; itemCats[curItem]=itemCats[curItem].filter(x=>x!==c);
+    toast('已从「'+c+'」移出（文献内容保留）'); renderList(); renderDetail(); return; }
+  if(t.dataset.addtag){ addTag(curItem); return; }
+  // 导航
+  if(t.dataset.page){ document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('on'));
+    t.classList.add('on'); toast('切到「'+t.dataset.page+'」（写作页保持现状）'); return; }
+  // 收起详情
+  if(t.id==='btn-toggle-detail'){ $('detail').classList.toggle('closed'); return; }
+  if(t.id==='btn-open-full'){ if(!curItem){toast('请先选中一条文献');return;} toast('进入录入页 /library/books/'+curItem); return; }
+  if(t.id==='btn-add-cat'){ addCat(); return; }
+  if(t.id==='btn-add-theme'){ addTheme(); return; }
+  if(t.id==='btn-sort'){ toast('排序：按更新时间倒序'); return; }
+});
+
+function addTag(id){
+  const v = prompt('添加标签（多个用空格分隔）');
+  if(!v) return;
+  const arr = v.trim().split(/\s+/);
+  for(const a of arr) if(!itemTags[id].includes(a)) itemTags[id].push(a);
+  toast('已添加标签：'+arr.join('、')); renderList(); renderDetail();
+}
+function addCat(){
+  const v = prompt('新建分类名称');
+  if(!v) return toast('已取消');
+  CATS.push({id:Math.max(...CATS.map(c=>c.id))+1, name:v.trim(), n:0});
+  renderCats(); renderList(); toast('已新建分类「'+v.trim()+'」');
+}
+function addTheme(){
+  const v = prompt('新建主题名称');
+  if(!v) return toast('已取消');
+  THEMES.push({id:'t'+(THEMES.length+1), name:v.trim(), n:0});
+  renderThemes(); toast('已新建主题「'+v.trim()+'」（与分类相互独立）');
+}
+
+/* 右键菜单：删除 / 重命名 */
+document.addEventListener('contextmenu', e=>{
+  const catNode = e.target.closest('[data-cat]');
+  const thNode = e.target.closest('[data-theme]');
+  if(!catNode && !thNode) return;
+  e.preventDefault();
+  const name = catNode ? catName(+catNode.dataset.cat) : themeName(thNode.dataset.theme);
+  const act = prompt('「'+name+'」\n输入 1 = 重命名，2 = 删除，其它取消', '');
+  if(act==='1'){
+    const v = prompt('新名称', name); if(!v) return toast('已取消');
+    if(catNode) CATS.forEach(c=>{ if(c.id==thNode?0:+catNode.dataset.cat) c.name=v; CATS.forEach(s=>{if(s.id==+catNode.dataset.cat)s.name=v;}); });
+    else THEMES.forEach(t=>{ if(t.id===thNode.dataset.theme) t.name=v; (t.kids||[]).forEach(k=>{if(k.id===thNode.dataset.theme)k.name=v;}); });
+    toast('已重命名为「'+v+'」'); renderCats(); renderThemes(); renderList();
+  } else if(act==='2'){
+    if(!confirm('删除「'+name+'」？\n其下级分类会一并删除；分类中的文献只解除归类、内容保留。')) return;
+    const cid = +catNode.dataset.cat;
+    const target = CATS.find(c=>c.id===cid);
+    const names = [target.name].concat((target.sub||[]).map(s=>s.name));
+    let cnt=0;
+    ITEMS.forEach(i=>{ const had=i.cats.some(c=>names.includes(c)); if(had)cnt++;
+      itemCats[i.id]=itemCats[i.id].filter(c=>!names.includes(c)); });
+    if(target.sub) target.sub.forEach(s=>names.push(s.name));
+    const i = CATS.findIndex(c=>c.id===cid);
+    if(target.sub) target.sub.forEach(s=>CATS.splice(CATS.findIndex(c=>c.id===s.id),1));
+    CATS.splice(i,1);
+    curCat=null; renderCats(); renderList(); renderDetail();
+    toast('已删除 1 个分类（含下级），'+cnt+' 条文献已解除归类、内容保留');
+  }
+});
+
+/* 拖条目到分类 = 归类（追加） */
+document.addEventListener('dragstart', e=>{
+  const li = e.target.closest('.li[data-item]'); if(!li) return;
+  e.dataTransfer.setData('text/plain', li.dataset.item);
+  li.style.opacity='.45';
+});
+document.addEventListener('dragend', e=>{ const li=e.target.closest('.li'); if(li) li.style.opacity=''; });
+document.addEventListener('dragover', e=>{
+  const n = e.target.closest('[data-cat]'); if(!n) return;
+  e.preventDefault(); n.classList.add('on');
+});
+document.addEventListener('dragleave', e=>{ const n=e.target.closest?.('.on'); });
+document.addEventListener('drop', e=>{
+  const n = e.target.closest('[data-cat]'); if(!n) return;
+  e.preventDefault();
+  const id = +e.dataTransfer.getData('text/plain');
+  const it = ITEMS.find(x=>x.id===id); if(!it) return;
+  const cname = catName(+n.dataset.cat);
+  if(itemCats[id].includes(cname)){ toast('《'+it.t+'》已在「'+cname+'」中'); return; }
+  itemCats[id].push(cname);
+  renderList(); renderDetail(); toast('已把《'+it.t+'》归入〈'+cname+'》');
+});
+
+/* 备注 */
+document.addEventListener('input', e=>{ if(e.target.id==='d-note') itemNotes[curItem]=e.target.value; });
+
+/* 初始化 */
+renderCats(); renderThemes(); renderList(); renderDetail();
+</script>
+</body>
+</html>

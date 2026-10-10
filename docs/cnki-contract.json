@@ -1,0 +1,44 @@
+{
+  "_comment": "知网导出接口真实返回样本（2026-09-30 采集，网络首发论文，dbcode=CAPJ）。解析器与单元测试均以本文件为基准。",
+  "tool": "LESP-cnki-probe",
+  "capturedAt": "2026-09-30T08:26:38.274Z",
+  "pageUrl": "https://kns.cnki.net/kcms2/article/abstract?v=DgjXjbKQq8ekhZkqbxDfDHBP8G02affjkW-0aCDN8d_oggIHbxKYSMEk5cbJjT1miobJK_PUyGjx3nE3-j4kZYis4xnOez_s2EAY7CazbNmh7Pk_CClz635YOSCxxb3OMj1twyYJAHGKmOhka5mCrnsuohmLVAS2spv1lGvdTnHkdIteKVf2jQ==&uniplatform=NZKPT",
+  "detail": {
+    "exportId": "kd9kqNkOM8Xyu_MccKCQ5AM1UHjV0uMR_icN4IXwgif69OtnXokF_8b1Vje2EZ8wrqtN1ip9qLEJvoaHJOj2zP15U4RVk_tCm67MCfzPBes!",
+    "dbcode": "CAPJ",
+    "dbname": null,
+    "filename": null
+  },
+  "fulltext": {
+    "pdfDown": "https://bar.cnki.net/bar/download/order?id=Pmp%2F5es3RB81cmauPwpbvptZFPGzz32xXYww99gr5E1iRrp%2BIpfT0%2B4%2F%2BdNMKUkXRjjDbWnDlRjHJZuy%2FtmjcHYKYwtoM8hkJfTYrgCOh97w7Umt9nDzwy31%2BirqzzeUOXd9VWRdK41te2p4b3E6n7R%2B7uf%2FUq5onmDkPfYmN%2FzIRUHBpmYiWZCdd8rlvRr0sDIqf3PhE1GQNLOUjGGTgBkiVYxL6xXYCKAcqh8kA0Pl7855lBKxrmbJq2ECNP0GhpIZ6EausM4tEEdDlyyPU%2BhRr6hrH6w5Neu2hR9KJE6dOx89pqwCZVRJ09PS4dTX",
+    "cajDown": "https://bar.cnki.net/bar/download/order?id=Pmp%2F5es3RB81cmauPwpbvptZFPGzz32xXYww99gr5E1iRrp%2BIpfT0%2B4%2F%2BdNMKUkXRjjDbWnDlRjHJZuy%2FtmjcHYKYwtoM8hkJfTYrgCOh97w7Umt9nDzwy31%2BirqzzeUyG0GXHRF7B1SqLFn5ESzMbR%2B7uf%2FUq5onmDkPfYmN%2FzIRUHBpmYiWZCdd8rlvRr0sDIqf3PhE1GQNLOUjGGTgBkiVYxL6xXYCKAcqh8kA0Pl7855lBKxrmbJq2ECNP0GhpIZ6EausM4tEEdDlyyPU%2BhRr6hrH6w5Neu2hR9KJE6dOx89pqwCZVRJ09PS4dTX"
+  },
+  "exportApi": {
+    "code": 1,
+    "msg": "返回成功",
+    "data": [
+      {
+        "key": "GB/T 7714-2025 格式引文",
+        "mode": "GBTREFER",
+        "value": [
+          "[1]杨钊阳,熊辉.新大众文艺的生成逻辑与发展路径——以动画《牛来》为例[J/OL].学术探索,1-9[2026-09-30].https://link.cnki.net/urlid/53.1148.C.20260904.1311.010.<br>"
+        ]
+      },
+      {
+        "key": "知网研学（原E-Study）",
+        "mode": "ELEARNING",
+        "value": [
+          "DataType: 1<br>Title-题名: 新大众文艺的生成逻辑与发展路径——以动画《牛来》为例<br>Author-作者:杨钊阳;熊辉;<br>Source-刊名: 学术探索<br>PubTime-出版时间: 2026-09-05 09:30<br>Keyword-关键词: 新大众文艺;大众写;写大众;动画《牛来》<br>Summary-摘要: 数字媒介重构文艺生产传播模式，新大众文艺成为了网络文化的重要形态。以动画短片《牛来》为分析样本，可发现“大众写”的参与式生产与“写大众”的镜像式书写形成主体间性互构关系。该互构关系由技术赋能、主体重构、文本生产、文化动力四重逻辑共同生成，数字工具与算法提供技术基础，产消者群体实现主体觉醒，寓言化、互文性叙事拓展文本意义，集体情感共鸣构成内在文化心理驱动。新大众文艺面临审美参差不齐、流量逻辑裹挟、版权治理滞后等现实难题，需从创作深耕现实、优化平台传播生态、完善产业版权体系、构建多方协同治理四个维度综合施策，以此推动新大众文艺健康可持续发展。<br>PageCount-页数: 9<br>SrcDatabase-来源库: 期刊<br>Organ-机构: 暨南大学马克思主义学院;<br>Link-链接: https://link.cnki.net/urlid/53.1148.C.20260904.1311.010<br><br>"
+        ]
+      },
+      {
+        "key": "EndNote",
+        "mode": "ENDNOTE",
+        "value": [
+          "%0 Journal Article<br>%A 杨钊阳<br>%A 熊辉<br>%+ 暨南大学马克思主义学院;<br>%T 新大众文艺的生成逻辑与发展路径——以动画《牛来》为例<br>%J 学术探索<br>%K 新大众文艺;大众写;写大众;动画《牛来》<br>%X 数字媒介重构文艺生产传播模式，新大众文艺成为了网络文化的重要形态。以动画短片《牛来》为分析样本，可发现“大众写”的参与式生产与“写大众”的镜像式书写形成主体间性互构关系。该互构关系由技术赋能、主体重构、文本生产、文化动力四重逻辑共同生成，数字工具与算法提供技术基础，产消者群体实现主体觉醒，寓言化、互文性叙事拓展文本意义，集体情感共鸣构成内在文化心理驱动。新大众文艺面临审美参差不齐、流量逻辑裹挟、版权治理滞后等现实难题，需从创作深耕现实、优化平台传播生态、完善产业版权体系、构建多方协同治理四个维度综合施策，以此推动新大众文艺健康可持续发展。<br>%P 1-9<br>%@ 1006-723X<br>%L 53-1148/C<br>%U https://link.cnki.net/urlid/53.1148.C.20260904.1311.010<br>%W CNKI<br><br> "
+        ]
+      }
+    ],
+    "traceid": "d6a46c69e8db4ee89d37ec1a851a8d8c.435.17907567959071901"
+  }
+}

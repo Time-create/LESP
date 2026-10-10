@@ -1,0 +1,4 @@
+(function(){
+ window.exportWriting=async function(config,controller,format){try{await controller.flush();if(!window.desktopBridge?.exportFile)throw new Error('请在桌面工作台中导出');const status=document.getElementById('export-state');status.textContent='正在生成文件…';const result=await desktopBridge.exportFile({...config,revision:controller.revision,format});status.textContent=result.canceled?'已取消导出':'已导出：'+result.path;}catch(e){toast(e.message);const status=document.getElementById('export-state');if(status)status.textContent='导出失败：'+e.message;}};
+ window.exportAnnotatedPdf=async function(id,controller){try{await controller.flush();if(!window.desktopBridge?.exportFile)throw new Error('请在桌面工作台中导出');const result=await desktopBridge.exportFile({id,format:'annotated-pdf'});toast(result.canceled?'已取消导出':'已另存带批注 PDF 副本');}catch(e){toast(e.message);}};
+})();

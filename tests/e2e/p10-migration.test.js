@@ -1,0 +1,4 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {launch}=require('./helpers');const path=require('node:path');const fs=require('node:fs');
+test('P10 desktop migration startup pointer survives restart and can back up again',{timeout:90000},async()=>{
+ let r=await launch();const dir=r.dir,target=path.join(dir,'新资料目录');try{await r.request('/api/items','POST',{module:'classics',title:'迁移持久性'});await r.request('/api/settings/data-dir','POST',{data_dir:target});assert.equal((await r.request('/api/health')).dataDir,target);assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'data/startup.json'),'utf8')).dataDir,target);await r.close();r=await launch({dir});assert.equal((await r.request('/api/health')).dataDir,target);assert.equal((await r.request('/api/items')).total,1);const backup=await r.request('/api/backup/create','POST',{});assert.ok(fs.existsSync(path.join(target,'backups',backup.file)));}finally{await r.close();}
+});

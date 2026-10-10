@@ -1,0 +1,4 @@
+const {randomUUID}=require('node:crypto');let busy=false,active=0;let epoch=randomUUID();
+function middleware(req,res,next){if(['GET','HEAD','OPTIONS'].includes(req.method)||/^\/api\/(backup\/(create|restore)|settings\/data-dir)$/.test(req.path))return next();if(busy)return res.status(503).json({error:'正在备份或迁移，请稍后重试保存'});active++;let done=false;const finish=()=>{if(!done){active--;done=true;}};res.once('finish',finish);res.once('close',finish);next();}
+async function run(fn){if(busy)throw Object.assign(new Error('已有数据维护操作正在进行'),{status:409});busy=true;try{const start=Date.now();while(active){if(Date.now()-start>30000)throw new Error('仍有未完成写入，请稍后重试');await new Promise(r=>setTimeout(r,20));}return await fn();}finally{busy=false;}}
+module.exports={middleware,run,get epoch(){return epoch;},changed(){epoch=randomUUID();}};

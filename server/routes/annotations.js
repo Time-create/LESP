@@ -1,0 +1,8 @@
+const router=require('express').Router();const service=require('../services/annotations');const db=require('../db');const {fail}=require('../services/writing');const wrap=fn=>async(req,res,next)=>{try{res.json(await fn(req));}catch(e){next(e);}};
+router.get('/:id/pdf-info',wrap(async req=>{const {attachment,pdf}=await service.file(req.params.id);return{...attachment,pages:pdf.getPages().map(p=>({crop:p.getCropBox(),rotation:p.getRotation().angle})),drafts:db.dbAll('SELECT * FROM pdf_annotation_drafts WHERE attachment_id=?',[Number(req.params.id)]).map(d=>({...d,draft:JSON.parse(d.draft_json)}))};}));
+router.get('/:id/annotations',wrap(req=>service.list(req.params.id)));
+router.put('/:id/annotations',wrap(req=>service.save(req.params.id,req.body)));
+router.delete('/:id/annotations/:uuid',wrap(req=>{const row=db.dbGet('SELECT * FROM pdf_annotations WHERE uuid=? AND attachment_id=?',[req.params.uuid,Number(req.params.id)]);if(!row)fail('批注不存在',404);if(Number(req.query.revision)!==row.revision)fail('批注已更新，请重新载入',409);db.dbRun('DELETE FROM pdf_annotations WHERE uuid=?',[row.uuid]);return{ok:true};}));
+router.put('/:id/annotation-draft',wrap(req=>{if(!req.body.clientId||!req.body.draft)fail('草稿无效');db.dbRun('INSERT INTO pdf_annotation_drafts VALUES (?,?,?,?) ON CONFLICT(attachment_id,client_id) DO UPDATE SET draft_json=excluded.draft_json,saved_at=excluded.saved_at',[Number(req.params.id),req.body.clientId,JSON.stringify(req.body.draft),db.now()]);return{ok:true};}));
+router.delete('/:id/annotation-draft/:client',wrap(req=>{db.dbRun('DELETE FROM pdf_annotation_drafts WHERE attachment_id=? AND client_id=?',[Number(req.params.id),req.params.client]);return{ok:true};}));
+module.exports=router;

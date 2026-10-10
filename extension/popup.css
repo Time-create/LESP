@@ -1,0 +1,57 @@
+body {
+  width: 320px;
+  margin: 0;
+  padding: 14px;
+  font: 13px/1.6 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #2A2724;
+  background: #F7F5F0;
+}
+
+header { display: flex; align-items: baseline; gap: 6px; margin-bottom: 12px; }
+.brand { font-weight: 600; font-size: 14px; }
+.sub { font-size: 11px; color: #9A938A; }
+
+.row { margin-bottom: 10px; }
+.row label { display: block; font-size: 11px; color: #6F6960; margin-bottom: 4px; }
+select, input[type=text] {
+  width: 100%; box-sizing: border-box; padding: 6px 8px; font: inherit;
+  border: 1px solid #E3DED3; border-radius: 6px; background: #fff; color: #2A2724;
+}
+
+.opts { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; font-size: 12px; color: #4A4640; }
+.opts label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+button.primary {
+  width: 100%; padding: 8px; border: none; border-radius: 6px; cursor: pointer;
+  background: #2A2724; color: #fff; font: inherit; font-weight: 500;
+}
+button.primary:disabled { background: #9A938A; cursor: default; }
+button.primary:hover:not(:disabled) { background: #A63A28; }
+
+.status {
+  margin-top: 10px; padding: 8px 10px; border-radius: 6px;
+  background: #fff; border: 1px solid #E3DED3; font-size: 12px; white-space: pre-wrap;
+}
+.status.ok { border-color: #4A6B4F; color: #33513A; background: #F0F5F0; }
+.status.warn { border-color: #C9A227; color: #7A5F14; background: #FBF6E6; }
+.status.err { border-color: #A63A28; color: #8A2F20; background: #FBEEEB; }
+
+.meta {
+  margin-top: 8px; padding: 8px 10px; border-radius: 6px;
+  background: #fff; border: 1px dashed #E3DED3; font-size: 11px; color: #6F6960;
+  max-height: 140px; overflow: auto;
+}
+.meta b { color: #2A2724; }
+.meta .warn { color: #A63A28; }
+
+footer { margin-top: 12px; font-size: 10px; line-height: 1.5; color: #9A938A; }
+
+/* 复选框同一行显示、设置折叠区 */
+label.inline { display: flex; align-items: center; gap: 6px; }
+#syncConf { margin-top: 12px; border-top: 1px dashed #E3DED3; padding-top: 8px; }
+#syncConf summary { cursor: pointer; font-size: 12px; color: #6F6960; }
+.conf { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.conf label { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6F6960; }
+.conf input[type=text] { flex: 1; padding: 4px 6px; font: inherit; border: 1px solid #E3DED3; border-radius: 6px; }
+button.link { background: none; border: none; color: #A63A28; cursor: pointer; font: inherit; font-size: 11px; padding: 0; text-align: left; }
+.hint { font-size: 10px; color: #9A938A; white-space: pre-wrap; }

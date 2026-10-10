@@ -1,0 +1,22 @@
+[
+  {
+    "name": "legacy",
+    "exitCode": 0,
+    "elapsedMs": 42177
+  },
+  {
+    "name": "desktop-service",
+    "exitCode": 0,
+    "elapsedMs": 1421
+  },
+  {
+    "name": "v2",
+    "exitCode": 0,
+    "elapsedMs": 4881
+  },
+  {
+    "name": "desktop-e2e",
+    "exitCode": 0,
+    "elapsedMs": 163387
+  }
+]

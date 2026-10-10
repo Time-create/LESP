@@ -1,0 +1,67 @@
+/* PDF 阅读器样式（阅读页为裸布局：无应用侧栏，正文占满整窗）
+   注意：本文件必须包含全部布局规则——缺失会导致画布/文字层/批注错位、控件失效。 */
+
+/* ---- 顶部控制条 ---- */
+.pdf-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.pdf-controls input { width: 75px; }
+
+/* ---- 主工作区：两栏（正文 + 高亮笔记） ---- */
+.pdf-workspace {
+  display: grid;
+  /* minmax(0,1fr) 很关键：默认 auto 最小值会让列被画布撑开，适宽缩放会正反馈失控 */
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 12px;
+}
+
+/* ---- 正文滚动容器：固定高度（不用 max-height，避免高度随内容变化形成缩放反馈） ---- */
+.pdf-workspace #pdf-scroll {
+  overflow: auto;
+  height: calc(100vh - 165px);
+  background: #b4b1aa;
+  padding: 6px;
+  min-width: 0;      /* 允许在网格中收缩；横向溢出用滚动，而不是撑开列宽 */
+}
+
+/* ---- 页面容器：文字层/批注层以它为定位基准 ---- */
+.pdf-workspace #pdf-page-surface {
+  position: relative;
+  background: white;
+  margin: 0 auto;
+  box-shadow: 0 2px 9px #777;
+}
+.pdf-workspace canvas { display: block; }
+
+/* ---- 右侧笔记栏 ---- */
+.pdf-workspace #pdf-side { overflow: auto; height: calc(100vh - 165px); }
+.pdf-workspace #pdf-side label { display: block; margin: 8px 0; }
+.pdf-workspace textarea { width: 100%; }
+.pdf-annotation { display: block; width: 100%; text-align: left; margin: 8px 0; padding: 10px; white-space: pre-wrap; }
+.pdf-annotation.selected { border: 2px solid #ae442c; }
+
+/* ---- 叠加层：文字层在下、批注层在上 ---- */
+.pdf-workspace .textLayer { z-index: 2; }
+.pdf-workspace #pdf-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.pdf-mark { position: absolute; pointer-events: none; box-sizing: border-box; }
+.pdf-mark.selected { outline: 2px solid #d33416; }
+
+/* ---- 框选区域模式 ---- */
+.pdf-region-mode .textLayer { pointer-events: none; }
+.pdf-region-mode #pdf-overlay { pointer-events: auto; cursor: crosshair; }
+
+/* ---- 状态与草稿 ---- */
+#pdf-status { color: #8a3529; }
+#pdf-drafts { background: #fff0cc; }
+
+/* ---- 阅读页（裸布局）留白收窄 ---- */
+body { margin: 0; }
+.reader-main { padding: 10px 16px; }
+.page-head { margin-bottom: 8px; }
+/* 快捷键提示行 */
+.pdf-shortcuts { color: #8a3529; font-size: 11px; margin: 0 0 6px; }
+
+/* 缩放百分比显示 */
+.pdf-zoom-value {
+  display: inline-block; min-width: 52px; text-align: center;
+  font-size: 12px; color: var(--ink-2, #5a544c);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\<用户名>\\Desktop\\APP开发\\data",
+  "backup": "C:\\Users\\<用户名>\\Desktop\\APP开发\\.v2-safety\\release-2026-09-27T12-21-30-566Z",
+  "before": {
+    "items": 18,
+    "excerpts": 7,
+    "attachments": 0,
+    "compilations": 0,
+    "compilation_blocks": 0,
+    "compilation_refs": 0,
+    "notes": 0,
+    "ideas": 0
+  },
+  "after": {
+    "items": 18,
+    "excerpts": 7,
+    "attachments": 0,
+    "compilations": 0,
+    "compilation_blocks": 0,
+    "compilation_refs": 0,
+    "notes": 0,
+    "ideas": 0
+  },
+  "schemaVersion": 2,
+  "integrity": "ok",
+  "originalTextUnchanged": true,
+  "at": "2026-09-27T12:21:30.660Z"
+}

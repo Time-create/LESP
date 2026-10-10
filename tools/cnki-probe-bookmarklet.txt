@@ -1,0 +1,17 @@
+使用方法：
+1. 在浏览器书签栏点右键 → 添加网页/添加书签
+2. 名称随便填（比如「知网侦察」）
+3. 把下面【一整行】内容粘到「网址/URL」那一栏，保存
+4. 登录知网，打开任意一篇文献详情页，点这个书签
+
+它会：找到本页的加密 ID → 调一次导出接口 → 把结果复制到剪贴板（并弹窗告诉你成功与否）
+然后你把剪贴板内容粘贴给我，或存成 docs\cnki-contract.json。
+
+------------------------------------------------------------
+（下面这一整行，从 javascript: 开始全部复制）
+
+javascript:(async()=>{const g=s=>{const e=document.querySelector(s);return e?(e.value||e.getAttribute('href')||''):null};const id=g('#export-id');if(!id){alert('没找到 #export-id。请确认：①已登录知网 ②当前在文献详情页（不是检索结果页）');return}let j=null;try{const r=await fetch('https://kns.cnki.net/dm8/API/GetExport',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({filename:id,displaymode:'GBTREFER,elearning,EndNote',uniplatform:new URLSearchParams(location.search).get('uniplatform')||'NZKPT'})});j=await r.json()}catch(e){alert('请求失败：'+e.message);return}const out={tool:'LESP-cnki-probe-bookmarklet',capturedAt:new Date().toISOString(),pageUrl:location.href,detail:{exportId:id,dbcode:g('#paramdbcode'),dbname:g('#paramdbname'),filename:g('#paramfilename')},fulltext:{pdfDown:g('a#pdfDown'),cajDown:g('a#cajDown')},exportApi:j};const t=JSON.stringify(out,null,2);try{await navigator.clipboard.writeText(t)}catch(e){}console.log(t);alert(j.code===1?'成功（code=1）！结果已复制到剪贴板，并已打印到控制台。':'返回 code='+j.code+'，多半是未登录或触发风控。详情已打印到控制台。')})()
+
+------------------------------------------------------------
+注意：书签版只取"最关键的导出接口返回"，不做批量 ID、参考文献等检查。
+想要完整版请用同目录下的 cnki-probe.user.js（需 Tampermonkey）。

@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "LESP·辑微 · 正文抓取下载",
+  "version": "1.2.0",
+  "description": "提取当前网页正文（标题、段落、层级结构），一键保存为 PDF / HTML / Markdown / TXT。全部本地完成，不联网、不加载远程代码。",
+  "permissions": [
+    "activeTab",
+    "downloads",
+    "scripting",
+    "storage"
+  ],
+  "optional_permissions": [
+    "debugger"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:*/*",
+    "https://*.cnki.net/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "抓取本页正文",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

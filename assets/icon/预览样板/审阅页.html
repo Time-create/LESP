@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>图标风格样板 · 待审批</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1b2430; --muted:#5d6b7c;
+    --line:#e3e7ec; --accent:#1f5c8f; --warn:#b3541e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:"Microsoft YaHei","PingFang SC",-apple-system,Segoe UI,sans-serif;line-height:1.65}
+  .wrap{max-width:1080px;margin:0 auto;padding:36px 28px 80px}
+  h1{font-size:26px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+  h2{font-size:19px;margin:38px 0 14px;padding-left:11px;border-left:4px solid var(--accent)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:#f0f3f6;font-weight:600}
+  code{background:#eef2f6;padding:1px 5px;border-radius:4px;font-size:13px}
+  .num{color:var(--warn);font-weight:600;white-space:nowrap}
+  .grid{display:flex;gap:18px;flex-wrap:wrap}
+  .fig{text-align:center;flex:1;min-width:220px}
+  .fig img{width:100%;max-width:300px;background:
+      repeating-conic-gradient(#e9edf1 0% 25%, #fafbfc 0% 50%) 50%/18px 18px;
+      border:1px solid var(--line);border-radius:10px}
+  .cap{font-size:13px;color:var(--muted);margin-top:8px}
+  .cap b{color:var(--ink)}
+  .wide img{max-width:100%;width:100%}
+  .badge{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;
+         background:#e7eff7;color:var(--accent);margin-left:8px;vertical-align:2px}
+  .badge.gray{background:#eceff2;color:#5d6b7c}
+  ul{margin:8px 0 0 20px;padding:0}
+  li{margin:5px 0}
+  .note{background:#fff8ed;border:1px solid #f0d9b8;border-radius:10px;padding:14px 18px;font-size:14px}
+  .pick b{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>APP 图标 · 风格样板<span class="badge gray">待你审批</span></h1>
+  <div class="sub">底稿：<code>APP图标Logo设计 (2).png</code>（2048×2048 RGBA）· 全程像素级处理，原图未被修改 · 输出目录：<code>assets\icon\</code></div>
+
+  <h2>一、我实测出来的 4 个问题</h2>
+  <div class="card">
+    <table>
+      <tr><th style="width:20%">问题</th><th style="width:26%">实测数据</th><th>后果 / 处理办法</th></tr>
+      <tr>
+        <td><b>1. 圆形在画布里偏小</b><br><span style="color:var(--warn)">（最严重）</span></td>
+        <td>圆直径 <span class="num">1535 / 2048 = 75.0%</span><br>四周各空出约 12.5%</td>
+        <td>Windows 不会帮你补这部分空白，所以放在任务栏 / 资源管理器里，它会<b>肉眼可见地比旁边的应用图标小一圈</b>。这是本次唯一建议动的地方：把圆放大到画布 <b>92%</b>（留 4% 呼吸位），图形本身一个像素都不改。</td>
+      </tr>
+      <tr>
+        <td><b>2. 整体偏暗</b></td>
+        <td>不透明区亮度中位数 <span class="num">83/255</span><br>接近白色像素仅占 <span class="num">2%</span></td>
+        <td>缩到 16~32px 时会糊成一团深蓝。<b>可选</b>处理：明度小幅拉伸（+10 亮度 / ×1.10 增益，不换色相、不动形体）——见 A2，你决定要不要。</td>
+      </tr>
+      <tr>
+        <td><b>3. 绢纹颗粒偏重</b></td>
+        <td>背景区逐通道标准差 <span class="num">±15</span><br>（对 2048 原图 3×3 中值差均值 1.91）</td>
+        <td>大尺寸很有味道，但 16/20/24px 会变成脏脏的斑块。解决办法不是删掉它，而是<b>小尺寸换用简化版</b>（见第三节）。</td>
+      </tr>
+      <tr>
+        <td><b>4. 圆形边缘几乎没有抗锯齿</b></td>
+        <td>沿 y=1024 扫描：alpha 从 <span class="num">0 直接跳到 255</span><br>中间只有 1 个过渡像素</td>
+        <td>2048 原图上看不出来，但任何劣质缩放都会让边缘出现台阶。我的处理链路全程用 LANCZOS 重采样，此项无需你操心，只是说明它已在我的注意范围内。</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>二、主图标：重排建议（选 A1 还是 A2）</h2>
+  <div class="card">
+    <div class="grid">
+      <div class="fig"><img src="A0_now.png"><div class="cap"><b>A0 · 现状</b><br>圆占 75%，四周留白偏多</div></div>
+      <div class="fig"><img src="A1_reframe92.png"><div class="cap"><b>A1 · 重排至 92%（推荐）</b><br>只做构图重排，色彩与笔触零改动</div></div>
+      <div class="fig"><img src="A2_reframe92_bright.png"><div class="cap"><b>A2 · 重排 + 轻微提亮</b><br>在 A1 基础上 +10 亮度、×1.10 明度增益</div></div>
+    </div>
+  </div>
+
+  <h2>三、小尺寸实拍对比（上排＝真实像素，下排＝放大 4 倍）</h2>
+  <div class="card">
+    <div class="fig wide" style="margin-bottom:22px"><img src="B_now_small.png"><div class="cap"><b>现状</b>下 16 / 24 / 32 / 48 / 64px 的真实表现</div></div>
+    <div class="fig wide"><img src="B_prop_small.png"><div class="cap"><b>A1 提案</b>下同样的尺寸——图形整体获取得更大可用面积</div></div>
+  </div>
+
+  <h2>四、简化版剪影：三种候选，请你挑一个</h2>
+  <div class="card pick">
+    <p style="margin:0 0 14px">为 Windows 的 16 / 20 / 24px 做的简化版。我用<b>自适应背景模型</b>（扣除绢纹渐变后再提取笔触）自动抠出鹤形，得到三个不同"胖瘦"的结果。<b>这三个里肯定有一个最接近你心里那只鹤，也可能都不像</b>——因为这是自动抠图，请务必用肉眼验收：</p>
+    <div class="grid">
+      <div class="fig"><img src="C1_sil_det18.png"><div class="cap"><b>C1 · 保留较多细节</b><br>阈值 18，鹤形覆盖圆面积 22.8%<br>形体最完整，但内部可能残留线条噪点</div></div>
+      <div class="fig"><img src="C2_sil_det30.png"><div class="cap"><b>C2 · 中等</b><br>阈值 30，覆盖 9.5%<br>最干净，但可能缺了次要部分</div></div>
+      <div class="fig"><img src="C3_sil_lum.png"><div class="cap"><b>C3 · 亮度法</b><br>只取比背景亮的部分，覆盖 15.2%<br>最接近"白鹤"的直觉</div></div>
+    </div>
+    <div class="note" style="margin-top:16px">
+      <b>如果三个都不像鹤</b>——说明自动抠图对你的笔画不管用（深蓝背景上的浅蓝鹤 + 描边，对比度本身就很低）。这种情况下请告诉我，我改用<b>先 8 倍放大人工描轮廓</b>的路子：把鹤的外轮廓提取出来后你指哪我修哪，最多两三回合就能定形。这是唯一需要额外沟通的分支。
+    </div>
+  </div>
+
+  <h2>五、反转版（浅色主题备用）</h2>
+  <div class="card">
+    <div class="grid">
+      <div class="fig"><img src="D_light.png"><div class="cap"><b>D · 浅色主题反转版</b><br>浅米色圆底 + 深蓝鹤（#1A3654）<br>供 Win11 浅色任务栏使用</div></div>
+      <div class="fig" style="flex:2;min-width:280px">
+        <div style="font-size:14px;color:var(--muted);text-align:left">
+          <b style="color:var(--ink)">说明</b>
+          <ul>
+            <li>它跟 C1 用的是同一套轮廓，所以<b>先定 C 再定 D</b>，D 会自动跟进。</li>
+            <li>是否真的需要反转版取决于你的 App 是否跟随系统主题。暂按需保留。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>六、请你拍板（回一句就行）</h2>
+  <div class="card">
+    <p style="margin:0 0 10px">需要你回三件事：</p>
+    <ul>
+      <li><b>① 主图标</b>：定 <b>A1</b>（只重排）还是 <b>A2</b>（重排+提亮）？</li>
+      <li><b>② 简化版</b>：<b>C1 / C2 / C3</b> 挑一个，或告诉我"都不像"。</li>
+      <li><b>③ 反转版 D</b>：要，还是暂时不要？</li>
+    </ul>
+    <p style="margin:12px 0 0">三点确认后，我才生成最终交付件：<code>app.ico</code>（16/20/24/32/40/48/64/96/256）+ <code>1024 PNG 母版</code> + 简化版 16/32/48 PNG，全部放进 <code>assets\icon\</code>。<br><b>在你点头之前，你的原图和任何文件都不会被改动。</b></p>
+  </div>
+
+</div>
+</body>
+</html>

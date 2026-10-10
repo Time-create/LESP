@@ -1,0 +1,80 @@
+# ===== 你的研究数据：绝对不能上传 =====
+# 主数据库（含全部条目、录文、笔记，以及知网登录 Cookie）
+data/
+*.db
+*.db-shm
+*.db-wal
+# 原始 PDF 史料
+*.pdf
+# 备份与日志
+backups/
+logs/
+*.log
+*.zip
+
+# ===== 构建产物 =====
+# 打包产物体积巨大（18 万+文件），且含16 份自动备份
+dist/
+build/
+release/
+*.exe
+*.blockmap
+
+# ===== 依赖 =====
+node_modules/
+.npm/
+
+# ===== 本地配置与凭据 =====
+.env
+.env.*
+*.local
+# 扩展同步口令等运行时生成的密钥
+*.token
+secrets/
+
+# ===== IDE / 系统 =====
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 临时文件 =====
+tmp/
+temp/
+.cache/
+*.tmp
+*.bak
+*.orig
+*~
+
+# ===== 测试与安全备份残留（本地跑测产生，不应上传）=====
+.desktop-smoke/
+.v2-safety/
+baseline-tests.log
+p3-tests.log
+p4-tests.log
+desktop-test-results.txt
+
+# ===== 本地工作台记忆（我的开发笔记，不属于项目代码）=====
+.workbuddy/
+
+# ===== 一次性 Python 工具脚本（保留在本机，不上传）=====
+# 这些是我 9 月做图标 / 调试 exe 图标资源时写的临时脚本，
+# 硬编码了本机绝对路径（含用户名），且不被任何构建流程引用。
+# 成���已固化在 assets/icon/ 与 public/svg/ 里，删掉它们不影响应用。
+# 保留本地文件，仅从提交范围排除。
+scripts/_tmp*.py
+scripts/icon_*.py
+scripts/build-brand-mark.py
+
+# ===== 日志 =====
+logs/
+npm-debug.log*
+yarn-error.log*
+
+# ===== 说明：本文件本身要提交 =====
+# 它的作用就是告诉 git「不要碰上面这些」。
+
+# 提示：package-lock.json 应当提交（保证依赖版本可复现），故不在忽略之列。

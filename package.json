@@ -1,0 +1,45 @@
+{
+  "name": "shiliao-workbench",
+  "version": "2.0.0",
+  "private": true,
+  "description": "LESP·辑微 · 个人本地史料文献工作台",
+  "main": "desktop/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:web": "node server/index.js",
+    "build:desktop": "node scripts/build-frontend.js && node desktop/build.js",
+    "test:desktop": "node --test tests/desktop.test.js",
+    "test": "node scripts/test-legacy.js",
+    "seed": "node server/seed.js",
+    "build:frontend": "node scripts/build-frontend.js",
+    "test:v2": "node scripts/test-v2.js",
+    "test:e2e": "node scripts/test-e2e.js",
+    "test:all": "node scripts/test-all.js",
+    "verify:data": "node scripts/verify-data.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "archiver": "^7.0.1",
+    "better-sqlite3": "^11.10.0",
+    "docx": "9.7.2",
+    "express": "^4.21.2",
+    "image-size": "2.0.4",
+    "multer": "^2.0.0",
+    "pagedjs": "0.4.3",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.3.289",
+    "prosemirror-commands": "1.7.2",
+    "prosemirror-history": "1.5.0",
+    "prosemirror-keymap": "1.2.3",
+    "prosemirror-model": "1.25.12",
+    "prosemirror-schema-list": "1.5.1",
+    "prosemirror-state": "1.4.4",
+    "prosemirror-view": "1.42.6"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "esbuild": "0.28.2",
+    "playwright": "1.63.0",
+    "rcedit": "^5.0.2"
+  }
+}
